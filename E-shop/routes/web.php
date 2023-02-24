@@ -28,4 +28,5 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('categories', [CategoryController::class, 'index'])->name('categories');
     Route::get('add_categories', [CategoryController::class, 'create'])->name('add_categories');
+    Route::post('store_categories', [CategoryController::class, 'store'])->name('store_categories');
 });

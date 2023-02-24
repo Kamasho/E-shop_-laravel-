@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -14,6 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        $category = category::all();
         return view('Admin.Category.index');
     }
 
@@ -35,7 +37,26 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $category = new category();
+        if($request->hasFile('image')){
+            $file = $request->file('image');
+            $ext = $file->getClientOriginalExtension();
+            $filename = time().'.'.$ext;
+            $file->move('assets/uploads/category',$filename);
+            $category->image = $filename;
+        }
+
+        $category->name = $request->input("name");
+        $category->slug = $request->input("slug");
+        $category->description = $request->input("description");
+        $category->status = $request->input("status") == TRUE ? '1':'0';
+        $category->popular = $request->input("popular") == TRUE ? '1':'0';
+        $category->meta_title = $request->input("meta_title");
+        $category->meta_description = $request->input("meta_description");
+        $category->meta_keyword = $request->input("meta_keyword");
+        if($category->save()){
+            return redirect('/categories')->with('status', 'Category Added Successfully');
+        }
     }
 
     /**
